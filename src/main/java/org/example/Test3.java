@@ -33,7 +33,7 @@ public class Test3 {
 
             // System.out.print("username: " + username + ", password: " + password + "\n");
 
-            URI uri = new URI("https://api.meteomatics.com/2024-11-03T00:00:00Z/t_2m:C/52.520551,13.461804/json");
+            URI uri = new URI("https://api.meteomatics.com/2024-11-22T00:00:00Z/t_2m:C/52.520551,13.461804/json");
             URL url = uri.toURL();
             String credentials = "valenciacollege_rivera_christina" + ":" + "VV2hU5du3q";
             String encoding = Base64.getEncoder().encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
