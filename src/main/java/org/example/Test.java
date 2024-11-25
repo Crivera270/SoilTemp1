@@ -1,9 +1,14 @@
 package org.example;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Persistence;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URI;
@@ -11,7 +16,13 @@ import java.io.File;
 import java.io.IOException;
 
 public class Test {
+    static EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("default");
+    static EntityManager entityManager = entityManagerFactory.createEntityManager();
+    static EntityTransaction transaction = entityManager.getTransaction();
+
     public static void main(String[] args) throws Exception {
+    //Data first = new Data();
+
         //Create a file that will hold json code from the api
         try {
 
@@ -59,20 +70,43 @@ public class Test {
             myWriter.close();
 
 
-            org.json.JSONObject obj = new JSONObject(responseStrBuilder.toString());
+            JSONObject obj = new JSONObject(responseStrBuilder.toString());
 
             JSONObject array2 = obj.getJSONObject("hourly");
 
-            JSONArray dateObject = array2.getJSONArray("temperature_2m");
-            JSONArray dateObject1 = array2.getJSONArray("time");
+            JSONArray tempObject = array2.getJSONArray("temperature_2m");
+            JSONArray dateObject = array2.getJSONArray("time");
 
             System.out.println("\n");
             System.out.println("START HERE");
-            System.out.println(dateObject1);
             System.out.println(dateObject);
+            System.out.println(tempObject);
 
-        } catch (Exception e) {
-            e.printStackTrace();
+            for (int i = 0; i < tempObject.length(); i++) {
+                try {
+                    transaction.begin();
+                    //first.setPoint(String.valueOf(tempObject));
+                    //first.setDate(String.valueOf(dateObject));
+                    Data first = new Data();
+                    BigDecimal tempObject1 = tempObject.getBigDecimal(i);
+                    String hi = tempObject1.toString();
+                    first.setPoint(hi);
+
+                    entityManager.persist(first);
+                    transaction.commit();
+
+                } finally {
+                    if (transaction.isActive()) {
+                        transaction.rollback();
+                    }
+                }
+
+            }
+
+            } catch(Exception e){
+                e.printStackTrace();
+            }
+
         }
     }
-}
+
