@@ -16,6 +16,9 @@ public class Data {
     @Column(name = "POINT", nullable = false)
     private String point;
 
+    @Column(name = "TEMP")
+    private String temp;
+
     public Integer getId() {
         return id;
     }
@@ -38,6 +41,14 @@ public class Data {
 
     public void setPoint(String point) {
         this.point = point;
+    }
+
+    public String getTemp() {
+        return temp;
+    }
+
+    public void setTemp(String temp) {
+        this.temp = temp;
     }
 
 }

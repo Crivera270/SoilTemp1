@@ -41,7 +41,7 @@ public class Test {
 
 
             //Connect to said api
-            URI uri = new URI("https://archive-api.open-meteo.com/v1/archive?latitude=52.52&longitude=13.41&start_date=2024-11-07&end_date=2024-11-07&hourly=temperature_2m");
+            URI uri = new URI("https://api.open-meteo.com/v1/forecast?latitude=28.291956&longitude=-81.40757&hourly=temperature_2m,soil_temperature_6cm&temperature_unit=fahrenheit&start_date=2024-11-01&end_date=2024-11-26");
             URL url = uri.toURL();
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -74,23 +74,37 @@ public class Test {
 
             JSONObject array2 = obj.getJSONObject("hourly");
 
-            JSONArray tempObject = array2.getJSONArray("temperature_2m");
+            JSONArray tempairObject = array2.getJSONArray("temperature_2m");
+            JSONArray tempObject = array2.getJSONArray("soil_temperature_6cm");
             JSONArray dateObject = array2.getJSONArray("time");
 
             System.out.println("\n");
             System.out.println("START HERE");
-            System.out.println(dateObject);
+
+            System.out.println(tempairObject);
             System.out.println(tempObject);
+            System.out.println(dateObject);
+
 
             for (int i = 0; i < tempObject.length(); i++) {
                 try {
                     transaction.begin();
-                    //first.setPoint(String.valueOf(tempObject));
-                    //first.setDate(String.valueOf(dateObject));
                     Data first = new Data();
+
+                    //air temp
+                    BigDecimal tempairObject1 = tempairObject.getBigDecimal(i);
+                    String h3 = tempairObject1.toString();
+                    first.setTemp(h3);
+
+                    //soil temp
                     BigDecimal tempObject1 = tempObject.getBigDecimal(i);
                     String hi = tempObject1.toString();
                     first.setPoint(hi);
+
+                    //date
+                      String dateObject1 = dateObject.getString(i);
+                      String hi2 = dateObject1;
+                      first.setDate(hi2);
 
                     entityManager.persist(first);
                     transaction.commit();
